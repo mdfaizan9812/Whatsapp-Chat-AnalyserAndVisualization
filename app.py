@@ -107,7 +107,7 @@ def main():
                 st.write(df[['Text','Letter_Count','Word_Count']])
 
             ##most active user
-            if st.checkbox("most active user :"):
+            if st.checkbox("most active user"):
                 active_user=df['Name'].mode()
                 st.info(active_user.iloc[0])
 
@@ -153,9 +153,11 @@ def main():
             all_columns_name=df.columns.tolist()
 
             
-            #pie chart
+            #pie chart for word and letter count
             if st.checkbox("Visualize word and letter count and media msg"):
                 all_columns_name=df.columns.tolist()
+
+                # word count
                 if st.button("Generate pie plot for word count"):
                     st.write('0 mean media shared')
                     st.write('1 mean message has 1 word')
@@ -164,6 +166,7 @@ def main():
                     plt.pie(words_count_count,labels=words_count_count.index,autopct="%0.2f%%")
                     st.pyplot()
 
+                # Letter count
                 if st.button("Generate pie plot for letter count"):
                     st.write('0 mean media shared')
                     st.write('1 mean message has 1 letter')
@@ -171,10 +174,11 @@ def main():
                     letters_count_count=df.iloc[0:30,-2].value_counts()
                     plt.pie(letters_count_count,labels=letters_count_count.index,autopct="%0.2f%%")
                     st.pyplot()
-
+            
+            # Message shared by each user
             if st.checkbox("Message shared by each user"):
                 msg_by_each_user=df.groupby("Name").count()
-                graphm=st.selectbox("Select Graph",('','bar','pie'))
+                graphm=st.selectbox("Select Graph",('','bar','pie','pie_bar'))
                 if graphm == 'bar':
                     plt.title("Message shared by each user",fontsize=15)
                     plt.xlabel("User Name",fontsize=12)
@@ -186,9 +190,22 @@ def main():
                     plt.pie(msg_by_each_user['Text'],labels=msg_by_each_user.index,autopct="%0.2f%%")
                     st.pyplot()
 
+                if graphm == 'pie_bar':
+                    plt.subplot(2,1,1)
+                    plt.bar(msg_by_each_user.index,msg_by_each_user['Text'])
+                    plt.title("Message shared by each user",fontsize=15)
+                    plt.xlabel("User Name",fontsize=12)
+                    plt.ylabel("Number of message",fontsize=12)
+                    st.pyplot()
+                    plt.subplot(2,1,2)
+                    plt.pie(msg_by_each_user['Text'],labels=msg_by_each_user.index,autopct="%0.2f%%")
+                    plt.title("Message shared by each user",fontsize=15)
+                    st.pyplot()
+
+            # Media Message shared by each user
             if st.checkbox("Media Message shared by each user"):
                 media_msg_by_each_user=df[df["Text"]==" media shared"].groupby("Name").count()
-                graphm=st.selectbox("Select Graph",('','bar','pie'))
+                graphm=st.selectbox("Select Graph",('','bar','pie','pie_bar'))
                 if graphm == 'bar':
                     plt.title("Media message shared by each user",fontsize=15)
                     plt.xlabel("User Name",fontsize=12)
@@ -200,9 +217,23 @@ def main():
                     plt.pie(media_msg_by_each_user['Text'],labels=media_msg_by_each_user.index,autopct="%0.2f%%")
                     st.pyplot()
 
+                if graphm == 'pie_bar':
+                    plt.subplot(2,1,1)
+                    plt.title("Media message shared by each user",fontsize=15)
+                    plt.xlabel("User Name",fontsize=12)
+                    plt.ylabel("Number of media message",fontsize=12)
+                    plt.bar(media_msg_by_each_user.index,media_msg_by_each_user['Text'])
+                    st.pyplot()
+
+                    plt.subplot(2,1,2)
+                    plt.title("Media message shared by each user",fontsize=15)
+                    plt.pie(media_msg_by_each_user['Text'],labels=media_msg_by_each_user.index,autopct="%0.2f%%")
+                    st.pyplot()
+
+            # Message shared per day
             if st.checkbox("Message shared per day"):
                 msg=df.groupby("Date").count()
-                graphm=st.selectbox("Select Graph",('','bar','pie'))
+                graphm=st.selectbox("Select Graph",('','bar','pie','pie_bar'))
                 if graphm == 'bar':
                     plt.title("Message shared per day",fontsize=15)
                     plt.xlabel("Date",fontsize=12)
@@ -214,9 +245,23 @@ def main():
                     plt.pie(msg[:20]['Text'],labels=msg[:20].index,autopct="%0.2f%%")
                     st.pyplot()
 
+                if graphm == 'pie_bar':
+                    plt.subplot(2,1,1)
+                    plt.title("Message shared per day",fontsize=15)
+                    plt.xlabel("Date",fontsize=12)
+                    plt.ylabel("Number of message",fontsize=12)
+                    plt.bar(msg[:20].index,msg[:20]['Text'])
+                    st.pyplot()
+
+                    plt.subplot(2,1,2)
+                    plt.title("Message shared per day",fontsize=15)
+                    plt.pie(msg[:20]['Text'],labels=msg[:20].index,autopct="%0.2f%%")
+                    st.pyplot()
+
+            # Media message shared per day
             if st.checkbox("Media message shared per day"):
                 msg=df[df["Text"]==" media shared"].groupby("Date").count()
-                graphm=st.selectbox("Select Graph",('','bar','pie'))
+                graphm=st.selectbox("Select Graph",('','bar','pie','pie_bar'))
                 if graphm == 'bar':
                     plt.title("Media message shared per day",fontsize=15)
                     plt.xlabel("Date",fontsize=12)
@@ -228,9 +273,19 @@ def main():
                     plt.title("Media message shared per day",fontsize=15)
                     plt.pie(msg[:20]['Text'],labels=msg[:20].index,autopct="%0.2f%%")
                     st.pyplot()
-            
-            
 
+                if graphm == 'pie_bar':
+                    plt.subplot(2,1,1)
+                    plt.title("Media message shared per day",fontsize=15)
+                    plt.xlabel("Date",fontsize=12)
+                    plt.ylabel("Number of media message",fontsize=12)
+                    plt.bar(msg[:20].index,msg[:20]['Text'])
+
+                    plt.subplot(2,1,2)
+                    plt.title("Media message shared per day",fontsize=15)
+                    plt.pie(msg[:20]['Text'],labels=msg[:20].index,autopct="%0.2f%%")
+                    st.pyplot()
+            
             if st.button("It's Completed"):
                 st.balloons()
    
